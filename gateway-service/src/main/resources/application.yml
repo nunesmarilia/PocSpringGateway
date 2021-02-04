@@ -12,7 +12,15 @@ spring:
           predicates:
             - Path=/account/**
           filters:
-            - RewritePath=/account/(?<path>.*), /$\{path}
+            - RewritePath= /account/(?<path>.*), /$\{path}
+#            - name: CircuitBreaker
+#              args:
+#                name: accountCircuit
+#                fallbackUri: forward:/fallback/message
+
+            - CircuitBreaker=accountCircuit
+#
+#                fallbackUri= forward:/fallback/message
         - id: customer-service
           uri: lb://customer-service
           predicates:
@@ -31,9 +39,152 @@ spring:
             - Path=/product/**
           filters:
             - RewritePath=/product/(?<path>.*), /$\{path}
+#        - id: fallback
+#          uri: http://localhost:8080
+#          predicates:
+#            - Path=/fallback/
 
 logging.level.com.netflix: DEBUG
-    
-management:
-  security:
-    enabled: false
+
+#management:
+#  security:
+#    enabled: false
+#
+#endpoints:
+#  health.mapping.DOWN: OK
+#  health.mapping.OUT_OF_SERVICE : OK
+
+management.endpoints.web.exposure.include: '*'
+management.endpoint.health.show-details: always
+
+management.health.diskspace.enabled: false
+management.health.circuitbreakers.enabled: true
+management.health.ratelimiters.enabled: false
+
+management.metrics.tags.application: ${spring.application.name}
+management.metrics.distribution.percentiles-histogram.http.server.requests: true
+management.metrics.distribution.percentiles-histogram.resilience4j.circuitbreaker.calls: true
+
+info:
+  name: ${spring.application.name}
+  description: gateway-service
+  environment: ${spring.profiles.active}
+  version: 0.0.1
+
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10s
+    instances:
+      accountCircuit:
+        baseConfig: default
+        failureRateThreshold: 50
+        recordExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+
+#resilience4j.circuitbreaker:
+#  configs:
+#    default:
+#      registerHealthIndicator: true
+#      slidingWindowSize: 10
+#      minimumNumberOfCalls: 5
+#      permittedNumberOfCallsInHalfOpenState: 3
+#      automaticTransitionFromOpenToHalfOpenEnabled: true
+#      waitDurationInOpenState: 200s
+#      failureRateThreshold: 1
+#      eventConsumerBufferSize: 10
+#      recordExceptions:
+#        - org.springframework.web.client.HttpServerErrorException
+#        - java.util.concurrent.TimeoutException
+#        - java.io.IOException
+##      ignoreExceptions:
+#
+##    shared:
+##      slidingWindowSize: 100
+##      permittedNumberOfCallsInHalfOpenState: 30
+##      waitDurationInOpenState: 1s
+##      failureRateThreshold: 50
+##      eventConsumerBufferSize: 10
+##      ignoreExceptions:
+##  instances:
+##    backendA:
+##      baseConfig: default
+##    account:
+##      registerHealthIndicator: true
+##      slidingWindowSize: 10
+##      minimumNumberOfCalls: 10
+##      permittedNumberOfCallsInHalfOpenState: 3
+##      waitDurationInOpenState: 5s
+##      failureRateThreshold: 50
+##      eventConsumerBufferSize: 10
+##      recordFailurePredicate:
+#
+#resilience4j.retry:
+#  configs:
+#    default:
+#      maxRetryAttempts: 3
+#      waitDuration: 100
+#      retryExceptions:
+#        - org.springframework.web.client.HttpServerErrorException
+#        - java.util.concurrent.TimeoutException
+#        - java.io.IOException
+##      ignoreExceptions:
+##        - BusinessException
+#  instances:
+#    account:
+#      baseConfig: default
+#
+#resilience4j.bulkhead:
+#  configs:
+#    default:
+#      maxConcurrentCalls: 100
+#  instances:
+#    account:
+#      maxWaitDuration: 10ms
+#      maxConcurrentCalls: 20
+#
+#resilience4j.thread-pool-bulkhead:
+#  configs:
+#    default:
+#      maxThreadPoolSize: 4
+#      coreThreadPoolSize: 2
+#      queueCapacity: 2
+#  instances:
+##    backendA:
+##      baseConfig: default
+#    account:
+#      maxThreadPoolSize: 1
+#      coreThreadPoolSize: 1
+#      queueCapacity: 1
+#
+#resilience4j.ratelimiter:
+#  configs:
+#    default:
+#      registerHealthIndicator: false
+#      limitForPeriod: 10
+#      limitRefreshPeriod: 1s
+#      timeoutDuration: 0
+#      eventConsumerBufferSize: 100
+#  instances:
+##    backendA:
+##      baseConfig: default
+#    account:
+#      limitForPeriod: 6
+#      limitRefreshPeriod: 500ms
+#      timeoutDuration: 3s
+#
+#resilience4j.timelimiter:
+#  configs:
+#    default:
+#      cancelRunningFuture: false
+#      timeoutDuration: 2s
+#  instances:
+#    account:
+#      baseConfig: default

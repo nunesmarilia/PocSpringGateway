@@ -10,10 +10,13 @@ logging:
   pattern:
 #    console: "%d{HH:mm:ss.SSS} %-5level %msg%n"
     file: "%d{HH:mm:ss.SSS} %-5level %msg%n"
-    
+
+server.port: 0
+
 ---
 spring:
-  profiles: zone1
+  profiles:
+    active: zone1
   cloud:
     consul:
       discovery:
@@ -21,7 +24,8 @@ spring:
 
 ---
 spring:
-  profiles: zone2
+  profiles:
+    active: zone2
   cloud:
     consul:
       discovery:

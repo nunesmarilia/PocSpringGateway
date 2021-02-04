@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>pl.piomin.services</groupId>
-		<artifactId>sample-spring-cloud-consul</artifactId>
+		<groupId>com.b2w.services</groupId>
+		<artifactId>poc-spring-cloud-gateway-consul</artifactId>
 		<version>1.1</version>
 	</parent>
 	<artifactId>account-service</artifactId>

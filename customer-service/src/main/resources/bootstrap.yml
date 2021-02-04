@@ -3,10 +3,13 @@ spring:
     name: customer-service
   cloud:
     consul:
-      host: 192.168.99.100
+      host: 192.168.0.38
       port: 8500
       discovery:
-        instance-id: "${spring.cloud.client.hostname}:${spring.application.name}:${random.int[1,999999]}"
+        instance-id: "${spring.application.name}:${random.int[1,999999]}"
+        instanceZone: zone2
+#  instance-id: "${spring.cloud.client.hostname}:${spring.application.name}:${random.int[1,999999]}"
+
 
 logging:
   level:

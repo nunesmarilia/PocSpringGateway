@@ -1,15 +1,15 @@
-spring:  
+spring:
   application:
     name: gateway-service
   cloud:
     consul:
-      host: 192.168.99.100
+      host: 192.168.0.38
       port: 8500
-      
+
 logging:
   level:
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
-    
+
 ---
 spring:
   profiles: zone1
@@ -20,7 +20,7 @@ spring:
         register: false
         registerHealthCheck: false
         tags: zone=zone1
-server:  
+server:
   port: ${PORT:8080}
 
 ---
@@ -33,5 +33,5 @@ spring:
         register: false
         registerHealthCheck: false
         tags: zone=zone2
-server:  
+server:
   port: ${PORT:9080}
