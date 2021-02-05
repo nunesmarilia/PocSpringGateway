@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: fallback-service
+  cloud:
+    consul:
+      host: 192.168.0.38
+      port: 8500
+      discovery:
+        instance-id: "${spring.application.name}:${random.int[1,999999]}"
+        instanceZone: zone1
+
+logging:
+  level:
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+
+server:
+  port: 0
+
+---
+spring:
+  profiles: zone1
+  cloud:
+    consul:
+      discovery:
+        instanceZone: zone1
+
+---
+spring:
+  profiles: zone2
+  cloud:
+    consul:
+      discovery:
+        instanceZone: zone2
