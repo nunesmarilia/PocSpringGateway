@@ -57,6 +57,12 @@ public class AccountController {
 
 	@GetMapping("/{id}")
 	public Account findById(@PathVariable("id") Long id) {
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 		return repository.findById(id);
 	}
 
