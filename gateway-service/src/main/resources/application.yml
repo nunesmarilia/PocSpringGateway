@@ -107,12 +107,12 @@ resilience4j.circuitbreaker:
     accountCircuit:
       baseConfig: default
       registerHealthIndicator: true
-      slidingWindowSize: 10
-      minimumNumberOfCalls: 10
+      slidingWindowSize: 1
+      minimumNumberOfCalls: 1
       permittedNumberOfCallsInHalfOpenState: 3
-      waitDurationInOpenState: 5s
+      waitDurationInOpenState: 2s
       failureRateThreshold: 1
-      eventConsumerBufferSize: 10
+      eventConsumerBufferSize: 1
       slowCallDurationThreshold: 200ms
       slowCallRateThreshold: 30
 #      recordFailurePredicate:
